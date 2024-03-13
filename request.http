@@ -1,0 +1,106 @@
+
+#########################
+### Sign up & Register ...
+#########################
+
+### Sign up
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "username": "FinalTestUser",
+  "password": "FinalTestUser"
+}
+
+###
+### Sign in
+POST http://localhost:8080/auth/signin
+Content-Type: application/json
+
+{
+  "username": "FinalTestUser",
+  "password": "FinalTestUser"
+}
+
+> {%
+    client.global.set("auth_token", response.body.accessToken);
+%}
+
+#######################
+### Person ...
+#######################
+
+### Get all persons
+GET http://localhost:8080/persons
+Authorization: Bearer {{auth_token}}
+
+###
+### Get person by id
+GET http://localhost:8080/persons/1
+Authorization: Bearer {{auth_token}}
+
+###
+### Patch person by id
+PATCH http://localhost:8080/persons/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "username": "ModifiedFinalUser"
+}
+
+###
+### Delete person by id
+DELETE http://localhost:8080/persons/1
+Authorization: Bearer {{auth_token}}
+
+#######################
+### Item ...
+#######################
+
+### Create item
+POST http://localhost:8080/items
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+###
+### Get Item by id
+GET http://localhost:8080/items/{{id}}
+Authorization: Bearer {{auth_token}}
+
+#######################
+### Tag ...
+#######################
+
+POST http://localhost:8080/tags
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "testTag"
+}
+
+###
+### Get all Tags or all by name
+GET http://localhost:8080/tags/testTag
+Authorization: Bearer {{auth_token}}
+
+###
+### Patch/update tag
+PATCH http://localhost:8080/tags/{{id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "patchedTag"
+}
+###
+### Get Tag by id
+GET http://localhost:8080/tags/{{id}}
+Authorization: Bearer {{auth_token}}
+
+###
+### Delete tag by id
+DELETE http://localhost:8080/tags/{{id}}
+
+
