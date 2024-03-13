@@ -78,5 +78,5 @@ git push -f --tags
 
 # Docker MySql Images
 Falls MySql von Docker aus gestartet werden soll, kann folgendes Kommando verwendet werden:
-> docker run --name mysql_todo_list -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=db_todo_list -e MYSQL_USER=db_todo_list -e MYSQL_PASSWORD=Pass4CRUD2020 -p3306:3306 -d mysql:8.0.33
+> docker run --name mysql_todo_list -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=db_todo_list -e MYSQL_USER=/*user of db*/ -e MYSQL_PASSWORD=/*password for db*/ -p3308:3306 -d mysql:8.0.33
 
