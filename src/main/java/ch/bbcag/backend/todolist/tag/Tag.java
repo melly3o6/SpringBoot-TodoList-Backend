@@ -4,7 +4,6 @@ import ch.bbcag.backend.todolist.item.Item;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,6 +13,8 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @ManyToMany(mappedBy = "linkedTags")
+    private Set<Item> linkedItems = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -27,9 +28,6 @@ public class Tag {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-    @ManyToMany
-    private Set<Item> linkedItems = new HashSet<>();
 
     public Set<Item> getLinkedItems() {
         return linkedItems;

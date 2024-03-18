@@ -1,10 +1,5 @@
 package ch.bbcag.backend.todolist.tag;
 
-import ch.bbcag.backend.todolist.item.Item;
-import ch.bbcag.backend.todolist.item.ItemMapper;
-import ch.bbcag.backend.todolist.item.ItemRequestDTO;
-import ch.bbcag.backend.todolist.item.ItemResponseDTO;
-import ch.bbcag.backend.todolist.person.PersonResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,9 +29,9 @@ public class TagController {
     }
 
     @GetMapping("?name={name}")
-    @Operation(summary = "Get all items.")
+    @Operation(summary = "Get all tags.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Items found",
+            @ApiResponse(responseCode = "200", description = "Tags found",
                 content = @Content(schema = @Schema(implementation = TagResponseDTO.class)))
     })
     public ResponseEntity<?> findTags(@PathVariable String name) {
@@ -83,9 +78,11 @@ public class TagController {
     public ResponseEntity<?> insert(@RequestBody TagRequestDTO newTagDTO) {
         try {
             Tag newTag = TagMapper.fromRequestDTO(newTagDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(tagService.insert(newTag));
+            Tag savedTag = tagService.insert(newTag);
+            TagResponseDTO responseDTO = TagMapper.toResponseDTO(savedTag);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "There was a conflict while creating the tag");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tag couldn't be created");
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag was not found");
         }

@@ -4,16 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class TagResponseDTO extends TagRequestDTO {
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     private Integer id;
-
+    private List<Integer> itemIds;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -28,11 +20,17 @@ public class TagResponseDTO extends TagRequestDTO {
         return Objects.hash(super.hashCode(), id);
     }
 
-    private List<Integer> itemIds;
     public List<Integer> getItemIds() {
         return itemIds;
     }
     public void setItemIds(List<Integer> itemIds) {
         this.itemIds = itemIds;
+    }
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

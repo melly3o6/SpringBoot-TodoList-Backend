@@ -11,6 +11,7 @@ public class ItemMapper {
         ItemResponseDTO itemResponseDTO = new ItemResponseDTO();
 
         itemResponseDTO.setId(item.getId());
+        itemResponseDTO.setName(item.getName());
         itemResponseDTO.setCreatedAt(item.getCreatedAt());
 
         if (item.getLinkedTags() != null) {
@@ -43,12 +44,16 @@ public class ItemMapper {
         if (item.getLinkedTags() == null) {
             item.setLinkedTags(null);
         } else {
-            Set<Tag> linkedTags = itemRequestDTO
-                .getLinkedTagId()
-                .stream()
-                .map(ItemMapper::mapToTag)
-                .collect(Collectors.toSet());
-            item.setLinkedTags(linkedTags);
+            Set<Integer> linkedTagIds = itemRequestDTO.getLinkedTagId();
+
+            if (linkedTagIds != null) {
+                Set<Tag> linkedTags = linkedTagIds
+                    .stream()
+                    .map(ItemMapper::mapToTag)
+                    .collect(Collectors.toSet());
+
+                item.setLinkedTags(linkedTags);
+            }
         }
         return item;
     }

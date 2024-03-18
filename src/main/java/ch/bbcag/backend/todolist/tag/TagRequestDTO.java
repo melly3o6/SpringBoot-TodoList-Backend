@@ -8,23 +8,7 @@ import java.util.Set;
 public class TagRequestDTO {
     @NotBlank(message = "must not be blank")
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
     private Set<Integer> linkedItemIds;
-
-    public Set<Integer> getLinkedItemIds() {
-        return linkedItemIds;
-    }
-
-    public void setLinkedTagIds(Set<Integer> itemIds) {
-        this.linkedItemIds = itemIds;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -33,9 +17,23 @@ public class TagRequestDTO {
         TagRequestDTO that = (TagRequestDTO) o;
         return Objects.equals(name, that.name);
     }
-
+    public Set<Integer> getLinkedItemId() {
+        return linkedItemIds;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(name);
     }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLinkedItemId(Set<Integer> itemIds) {
+        this.linkedItemIds = itemIds;
+    }
+
 }

@@ -1,14 +1,13 @@
 package ch.bbcag.backend.todolist.item;
 
-import ch.bbcag.backend.todolist.person.PersonRequestDTO;
-
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-public class ItemResponseDTO extends PersonRequestDTO {
+public class ItemResponseDTO extends ItemRequestDTO {
     private Integer id;
     private Timestamp createdAt;
+    private List<Integer> tagIds;
 
     @Override
     public boolean equals(Object o) {
@@ -38,7 +37,6 @@ public class ItemResponseDTO extends PersonRequestDTO {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
-    private List<Integer> tagIds;
     public List<Integer> getTagIds() {
         return tagIds;
     }

@@ -28,13 +28,14 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping
+    @GetMapping("?name={name}")
     @Operation(summary = "Get all items.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Items found",
                     content = @Content(schema = @Schema(implementation = ItemResponseDTO.class)))
     })
-    public ResponseEntity<?> findItems(@RequestParam(required = false) String name,
+
+    public ResponseEntity<?> findItems(@PathVariable String name,
                                        @RequestParam(required = false) String tagName) {
 
         List<Item> items;
@@ -85,9 +86,11 @@ public class ItemController {
     public ResponseEntity<?> insert(@RequestBody ItemRequestDTO newItemDTO) {
         try {
             Item newItem = ItemMapper.fromRequestDTO(newItemDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(itemService.insert(newItem));
+            Item savedItem = itemService.insert(newItem);
+            ItemResponseDTO responseDTO = ItemMapper.toResponseDTO(savedItem);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
         } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "There was a conflict while creating the item");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item couldn't be created");
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item was not found");
         }

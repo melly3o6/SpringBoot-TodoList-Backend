@@ -10,8 +10,8 @@ public class TagMapper {
     public static TagResponseDTO toResponseDTO(Tag tag) {
         TagResponseDTO tagResponseDTO = new TagResponseDTO();
 
-
         tagResponseDTO.setId(tag.getId());
+        tagResponseDTO.setName(tag.getName());
 
         if (tag.getLinkedItems() != null) {
             List<Integer> itemIds = tag
@@ -33,12 +33,16 @@ public class TagMapper {
         if (tag.getLinkedItems() == null) {
             tag.setLinkedItems(null);
         } else {
-            Set<Item> linkedItems = tagRequestDTO
-                .getLinkedItemIds()
-                .stream()
-                .map(TagMapper::mapToItem)
-                .collect(Collectors.toSet());
-            tag.setLinkedItems(linkedItems);
+            Set<Integer> linkedItemIds = tagRequestDTO.getLinkedItemId();
+
+            if (linkedItemIds != null) {
+                Set<Item> linkedItems = linkedItemIds
+                        .stream()
+                        .map(TagMapper::mapToItem)
+                        .collect(Collectors.toSet());
+
+                tag.setLinkedItems(linkedItems);
+            }
         }
         return tag;
     }

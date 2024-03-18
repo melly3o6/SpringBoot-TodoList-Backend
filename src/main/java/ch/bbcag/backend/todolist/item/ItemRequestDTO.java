@@ -14,14 +14,6 @@ public class ItemRequestDTO {
     private Timestamp deletedAt;
     private Integer personId;
     private Set<Integer> linkedTagIds;
-    public Set<Integer>  getLinkedTagId() {
-        return linkedTagIds;
-    }
-
-    public void setLinkedTagId(Set<Integer> tagIds) {
-        this.linkedTagIds = tagIds;
-    }
-
     private Timestamp doneAt;
 
     @Override
@@ -35,6 +27,13 @@ public class ItemRequestDTO {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, personId);
+    }
+    public Set<Integer> getLinkedTagId() {
+        return linkedTagIds;
+    }
+
+    public void setLinkedTagId(Set<Integer> tagIds) {
+        this.linkedTagIds = tagIds;
     }
 
     public String getName() {

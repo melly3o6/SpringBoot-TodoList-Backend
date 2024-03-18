@@ -25,6 +25,11 @@ public class Item {
     @JoinColumn(name = "person_id")
     private Person person;
     @ManyToMany
+    @JoinTable(
+            name = "item_tag",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private Set<Tag> linkedTags = new HashSet<>();
 
     public Set<Tag> getLinkedTags() {
