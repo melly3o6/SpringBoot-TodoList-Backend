@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,24 @@ import java.util.List;
 @RestController
 @RequestMapping(PersonController.PATH)
 public class PersonController {
+
+    // Local variables
+
     public static final String PATH = "/persons";
 
     private final PersonService personService;
 
+    // Constructor
+
     public PersonController(PersonService personService) {
         this.personService = personService;
     }
+
+    // GET
+
+    // Find person all persons
+
+    // Documentation
 
     @GetMapping
     @Operation(summary = "Get all persons.")
@@ -33,6 +45,9 @@ public class PersonController {
             @ApiResponse(responseCode = "200", description = "Persons found",
                     content = @Content(schema = @Schema(implementation = PersonResponseDTO.class)))
     })
+
+    // Method
+
     public ResponseEntity<?> findAll() {
         List<Person> persons = personService.findAll();
 
@@ -40,6 +55,10 @@ public class PersonController {
                 .map(PersonMapper::toResponseDTO)
                 .toList());
     }
+
+    // Find person by id
+
+    // Documentation
 
     @GetMapping("{id}")
     @Operation(summary = "Get a person")
@@ -49,7 +68,10 @@ public class PersonController {
             @ApiResponse(responseCode = "404", description = "Person was not found",
                     content = @Content)
     })
-    public ResponseEntity<?> findById(@Parameter(description = "Id of person to get") @PathVariable Integer id) {
+
+    // Method
+
+    public ResponseEntity<?> findById(@Valid @Parameter(description = "Id of person to get") @PathVariable Integer id) {
         try {
             Person person = personService.findById(id);
             return ResponseEntity.ok(PersonMapper.toResponseDTO(person));
@@ -57,6 +79,12 @@ public class PersonController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person was not found");
         }
     }
+
+    // PATCH
+
+    // Update a person
+
+    // Documentation
 
     @PatchMapping("{id}")
             @Operation(summary = "Update a person")
@@ -68,6 +96,9 @@ public class PersonController {
             @ApiResponse(responseCode = "409", description = "There was a conflict while updating the person",
                     content = @Content)
     })
+
+    // Method
+
     public ResponseEntity<?> update(@Parameter(description = "The person to update") @RequestBody PersonRequestDTO updatePersonDTO, @PathVariable Integer id) {
         try {
             Person updatePerson = PersonMapper.fromRequestDTO(updatePersonDTO);
@@ -80,6 +111,12 @@ public class PersonController {
         }
     }
 
+    // DELETE
+
+    // Delete a person
+
+    // Documentation
+
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a person")
     @ApiResponses(value = {
@@ -88,7 +125,10 @@ public class PersonController {
             @ApiResponse(responseCode = "404", description = "Person could not be deleted",
                     content = @Content)
     })
-    public ResponseEntity<?> delete(@Parameter(description = "Id of person to delete") @PathVariable Integer id) {
+
+    // Method
+
+    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of person to delete") @PathVariable Integer id) {
         try {
             personService.deleteById(id);
             return ResponseEntity.noContent().build();

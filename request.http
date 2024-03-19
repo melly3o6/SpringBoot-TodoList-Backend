@@ -1,26 +1,26 @@
 
 #########################
-### Sign up & Register ...
+### Authentication ...
 #########################
 
-### Sign up
+### Sign up -> SUCCESSFULL
 POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "username": "FS06TestUser",
-  "password": "FS06TestUserPwd"
+  "username": "FS19_03_TestUser2",
+  "password": "FS19_03_TestPwd2"
 }
 
 ###
 
-### Sign in
+### Sign in -> SUCCESSFULL
 POST http://localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-  "username": "FS06TestUser",
-  "password": "FS06TestUserPwd"
+  "username": "FS19_03_TestUser2",
+  "password": "FS19_03_TestPwd2"
 }
 
 > {%
@@ -31,102 +31,116 @@ Content-Type: application/json
 ### Person ...
 #######################
 
-### Get all persons
+### Get all persons -> SUCCESSFULL
 GET http://localhost:8080/persons
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Get person by id
-GET http://localhost:8080/persons/1
+### Get person by id -> SUCCESSFULL
+GET http://localhost:8080/persons/9
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Patch person by id
-PATCH http://localhost:8080/persons/1
+### Patch person by id -> SUCCESSFULL
+PATCH http://localhost:8080/persons/9
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "username": "FS06ModifiedUser"
+  "username": "FS19_03_ModifiedUser2"
 }
 
 ###
 
-### Delete person by id
-DELETE http://localhost:8080/persons/1
+### Delete person by id -> SUCCESSFULL
+DELETE http://localhost:8080/persons/{{id}}
 Authorization: Bearer {{auth_token}}
 
 #######################
 ### Item ...
 #######################
 
-### Create item
+### Create item -> SUCCESSFULL
 POST http://localhost:8080/items
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "FS06ItemNAME",
-  "description": "FS06ItemDescription"
+  "name": "FS19_03_TestItem2",
+  "description": "FS19_03_ItemDescription2",
+  "personId": 8
 }
 
 ###
 
-### Get Item by id
-GET http://localhost:8080/items/1
+### Get Item by id -> SUCCESSFULL
+GET http://localhost:8080/items/16
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Get aLL Items by id
-GET http://localhost:8080/items
+### Get all Items -> SUCCESSFULL
+GET http://localhost:8080/items/item
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Delete Item by id
-DELETE http://localhost:8080/items/1
+### Get all Items by name -> SUCCESSFULL
+GET http://localhost:8080/items/item?name=FS19_03_TestItem2
 Authorization: Bearer {{auth_token}}
+
+###
+
+### Delete Item by id -> SUCCESSFULL
+DELETE http://localhost:8080/items/16
+Authorization: Bearer {{auth_token}}
+
 #######################
 ### Tag ...
 #######################
 
+### Create Tag -> SUCCESSFULL
 POST http://localhost:8080/tags
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "FS06Tag"
+  "name": "FS19_03_TestTag2"
 }
 
 ###
 
-### Get all Tags or all by name
-GET http://localhost:8080/tags/testTag
+### Get all Tags -> SUCCESSFULL
+GET http://localhost:8080/tags/tag
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Patch/update tag
+### Get Tags by name -> SUCCESSFULL
+GET http://localhost:8080/tags/tag?name=FS19_03_TestTag2
+Authorization: Bearer {{auth_token}}
+
+###
+
+### Patch/update tag -> SUCCESSFULL
 PATCH http://localhost:8080/tags/{{id}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "FS06patchedTag"
+  "name": "FS19_03_patchedTag"
 }
 
 ###
 
-### Get Tag by id
+### Get Tag by id -> SUCCESSFULL
 GET http://localhost:8080/tags/{{id}}
 Authorization: Bearer {{auth_token}}
 
 ###
 
-### Delete tag by id
-DELETE http://localhost:8080/tags/1
-
-
+### Delete tag by id -> SUCCESSFULL
+DELETE http://localhost:8080/tags/{{id}}
+Authorization: Bearer {{auth_token}}

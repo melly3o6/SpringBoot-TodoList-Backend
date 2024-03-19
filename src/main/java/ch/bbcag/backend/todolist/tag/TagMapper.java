@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TagMapper {
+
+    // To response
+
     public static TagResponseDTO toResponseDTO(Tag tag) {
         TagResponseDTO tagResponseDTO = new TagResponseDTO();
 
@@ -25,6 +28,9 @@ public class TagMapper {
 
         return tagResponseDTO;
     }
+
+    // From request
+
     public static Tag fromRequestDTO(TagRequestDTO tagRequestDTO) {
         Tag tag = new Tag();
 

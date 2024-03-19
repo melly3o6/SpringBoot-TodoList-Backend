@@ -5,6 +5,9 @@ import ch.bbcag.backend.todolist.item.Item;
 import java.util.List;
 
 public class PersonMapper {
+
+    // To response
+
     public static PersonResponseDTO toResponseDTO(Person person) {
         PersonResponseDTO personResponseDTO = new PersonResponseDTO();
 
@@ -24,6 +27,8 @@ public class PersonMapper {
 
         return personResponseDTO;
     }
+
+    // From request
 
     public static Person fromRequestDTO(PersonRequestDTO personRequestDTO) {
         Person person = new Person();

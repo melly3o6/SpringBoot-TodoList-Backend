@@ -5,9 +5,25 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class PersonRequestDTO {
+
+    // Attribute
+
     @NotBlank(message = "must not be blank")
     private String username;
 
+    // Getter
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    // Setter
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // equals & hashCode
 
     @Override
     public boolean equals(Object obj) {
@@ -24,14 +40,6 @@ public class PersonRequestDTO {
     @Override
     public int hashCode() {
         return Objects.hash(username);
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
 }

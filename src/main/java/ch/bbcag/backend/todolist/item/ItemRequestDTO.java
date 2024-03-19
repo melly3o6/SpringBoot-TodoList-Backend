@@ -1,20 +1,84 @@
 package ch.bbcag.backend.todolist.item;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 
 public class ItemRequestDTO {
+
+    // Attributes
+
     @NotBlank(message = "must not be blank")
     private String name;
+
     @NotBlank(message = "must not be blank")
     private String description;
-    private Timestamp deletedAt;
+
+    @NotNull(message = "owner is required")
     private Integer personId;
+
     private Set<Integer> linkedTagIds;
+
+    private Timestamp deletedAt;
+
     private Timestamp doneAt;
+
+    // Getters
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getPersonId() {
+        return personId;
+    }
+
+    public Set<Integer> getLinkedTagId() {
+        return linkedTagIds;
+    }
+
+    public Timestamp getDeletedAt() {
+        return deletedAt;
+    }
+
+    public Timestamp getDoneAt() {
+        return doneAt;
+    }
+
+    // Setters
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPersonId(Integer personId) {
+        this.personId = personId;
+    }
+
+    public void setLinkedTagId(Set<Integer> tagIds) {
+        this.linkedTagIds = tagIds;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public void setDoneAt(Timestamp doneAt) {
+        this.doneAt = doneAt;
+    }
+
+    // equals & hashCode
 
     @Override
     public boolean equals(Object o) {
@@ -28,51 +92,5 @@ public class ItemRequestDTO {
     public int hashCode() {
         return Objects.hash(name, description, personId);
     }
-    public Set<Integer> getLinkedTagId() {
-        return linkedTagIds;
-    }
 
-    public void setLinkedTagId(Set<Integer> tagIds) {
-        this.linkedTagIds = tagIds;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Timestamp getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Timestamp deletedAt) {
-        this.deletedAt = deletedAt;
-    }
-
-    public Integer getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(Integer personId) {
-        this.personId = personId;
-    }
-
-    public Timestamp getDoneAt() {
-        return doneAt;
-    }
-
-    public void setDoneAt(Timestamp doneAt) {
-        this.doneAt = doneAt;
-    }
 }

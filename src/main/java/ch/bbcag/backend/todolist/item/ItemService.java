@@ -1,9 +1,13 @@
 package ch.bbcag.backend.todolist.item;
 
+import ch.bbcag.backend.todolist.FailedValidationException;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ItemService {
@@ -36,11 +40,21 @@ public class ItemService {
     }
 
     private void mergeItems(Item existing, Item changing) {
+        Map<String, List<String>> errors = new HashMap<>();
+
         if (changing.getName() != null) {
-            existing.setName(changing.getName());
+            if (StringUtils.isNotBlank(changing.getName())) {
+                existing.setName(changing.getName());
+            } else {
+                errors.put("name", List.of("name must not be empty"));
+            }
         }
         if (changing.getDescription() != null) {
-            existing.setDescription(changing.getDescription());
+            if (StringUtils.isNotBlank(changing.getDescription())) {
+                existing.setDescription(changing.getDescription());
+            } else {
+                errors.put("description", List.of("description must not be empty"));
+            }
         }
         if (changing.getDeletedAt() != null) {
             existing.setDeletedAt(changing.getDeletedAt());
@@ -50,6 +64,9 @@ public class ItemService {
         }
         if (changing.getLinkedTags() != null) {
             existing.setLinkedTags(changing.getLinkedTags());
+        }
+        if (!errors.isEmpty()) {
+            throw new FailedValidationException(errors);
         }
     }
 

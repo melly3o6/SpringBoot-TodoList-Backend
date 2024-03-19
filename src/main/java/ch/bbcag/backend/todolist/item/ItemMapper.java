@@ -7,6 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ItemMapper {
+
+    // To response
+
     public static ItemResponseDTO toResponseDTO(Item item) {
         ItemResponseDTO itemResponseDTO = new ItemResponseDTO();
 
@@ -26,6 +29,9 @@ public class ItemMapper {
 
         return itemResponseDTO;
     }
+
+    // From request
+
     public static Item fromRequestDTO(ItemRequestDTO itemRequestDTO) {
         Person person = mapToPerson(itemRequestDTO.getPersonId());
         Item item = new Item();

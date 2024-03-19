@@ -1,9 +1,13 @@
 package ch.bbcag.backend.todolist.tag;
 
+import ch.bbcag.backend.todolist.FailedValidationException;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TagService {
@@ -40,8 +44,16 @@ public class TagService {
     }
 
     private void mergeTags(Tag existing, Tag changing) {
+        Map<String, List<String>> errors = new HashMap<>();
         if (changing.getName() != null) {
-            existing.setName(changing.getName());
+            if (StringUtils.isNotBlank(changing.getName())) {
+                existing.setName(changing.getName());
+            } else {
+                errors.put("name", List.of("name must not be empty"));
+            }
+            if (!errors.isEmpty()) {
+                throw new FailedValidationException(errors);
+            }
         }
     }
 }

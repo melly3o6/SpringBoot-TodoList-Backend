@@ -9,5 +9,4 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query("SELECT i FROM Tag i WHERE i.name LIKE CONCAT('%', :name, '%')")
     List<Tag> findByName(String name);
 
-    List<Tag> findByNameContains(String name);
 }

@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Integer> {
+
+    // Query to find item by name
     @Query("SELECT i FROM Item i WHERE i.name LIKE CONCAT('%', :name, '%')")
     List<Item> findByName(String name);
 
-    @Query("SELECT i FROM Item i WHERE i.name LIKE CONCAT('%', :name, '%')")
-    List<Item> findByNameContains(String name);
-
+    // Query to find item by tag-name
     @Query(
             "SELECT i FROM Item i " +
                     "JOIN i.linkedTags t " +
@@ -19,6 +19,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     )
     List<Item> findByTagName(String tagName);
 
+    // Query to find item by name and tag-name
     @Query(
             "SELECT i FROM Item i " +
                     "JOIN i.linkedTags t " +

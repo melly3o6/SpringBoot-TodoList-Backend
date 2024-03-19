@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,31 +21,50 @@ import java.util.List;
 @RestController
 @RequestMapping(TagController.PATH)
 public class TagController {
+
+    // Local variables
+
     public static final String PATH = "/tags";
     private final TagService tagService;
+
+    // Constructor
 
     @Autowired
     public TagController(TagService tagService) {
         this.tagService = tagService;
     }
 
-    @GetMapping("?name={name}")
+    // GET
+    // Find all tags
+    // --- Documentation ---
+    @GetMapping("tag")
     @Operation(summary = "Get all tags.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tags found",
                 content = @Content(schema = @Schema(implementation = TagResponseDTO.class)))
     })
-    public ResponseEntity<?> findTags(@PathVariable String name) {
-        List<Tag> tags;
-        if (name == null) {
-            tags = tagService.findAll();
-        } else {
-            tags = tagService.findByName(name);
+
+    // Method
+    public ResponseEntity<?> findTags(@RequestParam(required = false) String name) {
+        try {
+            List<Tag> tags;
+            if (name == null) {
+                tags = tagService.findAll();
+            } else {
+                tags = tagService.findByName(name);
+            }
+            return ResponseEntity.ok(tags.stream()
+                    .map(TagMapper::toResponseDTO)
+                    .toList());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tags were not found");
+
         }
-        return ResponseEntity.ok(tags.stream()
-                .map(TagMapper::toResponseDTO)
-                .toList());
     }
+
+    // Find a tag by id
+
+    // Documentation
 
     @GetMapping("{id}")
     @Operation(summary = "Get a tag")
@@ -54,7 +74,10 @@ public class TagController {
             @ApiResponse(responseCode = "404", description = "Tag was not found",
                     content = @Content)
     })
-    public ResponseEntity<?> findById(@Parameter(description = "Id of tag to get") @PathVariable Integer id) {
+
+    // Method
+
+    public ResponseEntity<?> findById(@Valid @Parameter(description = "Id of tag to get") @PathVariable Integer id) {
         try {
             Tag tag = tagService.findById(id);
             return ResponseEntity.ok(TagMapper.toResponseDTO(tag));
@@ -62,6 +85,12 @@ public class TagController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag was not found");
         }
     }
+
+    // POST
+
+    // Create a tag
+
+    // Documentation
 
     @PostMapping
     @Operation(summary = "Create a tag")
@@ -75,7 +104,10 @@ public class TagController {
             @ApiResponse(responseCode = "409", description = "There was a conflict while creating the tag",
                     content = @Content)
     })
-    public ResponseEntity<?> insert(@RequestBody TagRequestDTO newTagDTO) {
+
+    // Method
+
+    public ResponseEntity<?> insert(@Valid @RequestBody TagRequestDTO newTagDTO) {
         try {
             Tag newTag = TagMapper.fromRequestDTO(newTagDTO);
             Tag savedTag = tagService.insert(newTag);
@@ -88,6 +120,12 @@ public class TagController {
         }
     }
 
+    // PATCH
+
+    // Update a tag
+
+    // Documentation
+
     @PatchMapping("{id}")
     @Operation(summary = "Update a tag")
     @ApiResponses(value = {
@@ -98,6 +136,9 @@ public class TagController {
             @ApiResponse(responseCode = "409", description = "There was a conflict while updating the tag",
                     content = @Content)
     })
+
+    // Method
+
     public ResponseEntity<?> update(@Parameter(description = "The tag to update") @RequestBody TagRequestDTO updateTagDTO, @PathVariable Integer id) {
         try {
             Tag updateTag = TagMapper.fromRequestDTO(updateTagDTO);
@@ -110,6 +151,12 @@ public class TagController {
         }
     }
 
+    // DELETE
+
+    // Delete a tag
+
+    // Documentation
+
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a tag")
     @ApiResponses(value = {
@@ -118,7 +165,10 @@ public class TagController {
             @ApiResponse(responseCode = "404", description = "Tag could not be deleted",
                     content = @Content)
     })
-    public ResponseEntity<?> delete(@Parameter(description = "Id of tag to delete") @PathVariable Integer id) {
+
+    // Method
+
+    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of tag to delete") @PathVariable Integer id) {
         try {
             tagService.deleteById(id);
             return ResponseEntity.noContent().build();

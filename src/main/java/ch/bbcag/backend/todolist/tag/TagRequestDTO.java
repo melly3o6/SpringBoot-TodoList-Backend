@@ -6,9 +6,35 @@ import java.util.Objects;
 import java.util.Set;
 
 public class TagRequestDTO {
-    @NotBlank(message = "must not be blank")
+
+    // Attributes
+
+    @NotBlank(message = "Tag name can't be blank")
     private String name;
+
     private Set<Integer> linkedItemIds;
+
+    // Getters
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Integer> getLinkedItemId() {
+        return linkedItemIds;
+    }
+
+    // Setters
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLinkedItemId(Set<Integer> itemIds) {
+        this.linkedItemIds = itemIds;
+    }
+
+    // equals & hashCode
 
     @Override
     public boolean equals(Object o) {
@@ -17,23 +43,10 @@ public class TagRequestDTO {
         TagRequestDTO that = (TagRequestDTO) o;
         return Objects.equals(name, that.name);
     }
-    public Set<Integer> getLinkedItemId() {
-        return linkedItemIds;
-    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLinkedItemId(Set<Integer> itemIds) {
-        this.linkedItemIds = itemIds;
     }
 
 }

@@ -1,10 +1,15 @@
 package ch.bbcag.backend.todolist.person;
 
+import ch.bbcag.backend.todolist.FailedValidationException;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PersonService {
@@ -40,13 +45,24 @@ public class PersonService {
     }
 
     private void mergePersons(Person existing, Person changing) {
+
+        Map<String, List<String>> errors = new HashMap<>();
+
         if (changing.getUsername() != null) {
-            existing.setUsername(changing.getUsername());
+            if (StringUtils.isNotBlank(changing.getUsername())) {
+                existing.setUsername(changing.getUsername());
+            } else {
+                errors.put("username", List.of("username must not be empty"));
+            }
         }
 
         if (changing.getPassword() != null) {
             String newPassword = passwordEncoder.encode(changing.getPassword());
             existing.setPassword(newPassword);
+        }
+
+        if (!errors.isEmpty()) {
+            throw new FailedValidationException(errors);
         }
     }
 }
