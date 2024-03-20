@@ -36,7 +36,7 @@ public class Item {
     private Person person;
 
     // Many-to-many relationship between items and tags
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "item_tag",
             joinColumns = @JoinColumn(name = "item_id"),

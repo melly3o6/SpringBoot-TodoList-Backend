@@ -45,7 +45,7 @@ public class ItemController {
     // Find items by name or tagName
     // --- Documentation ---
     // @GetMapping annotation marks method as method for GET request -> followed by the URI http://localhost:8080/items/?name={name}
-    @GetMapping("item")
+    @GetMapping
     // @Operation annotation
     @Operation(summary = "Get all items.")
     // @ApiResponses annotation
@@ -186,7 +186,9 @@ public class ItemController {
 
     // Method
 
-    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of item to delete") @PathVariable Integer id) {
+    public ResponseEntity<?> delete(
+            @Parameter(description = "Id of item to delete")
+            @PathVariable("id") Integer id) {
         try {
             itemService.deleteById(id);
             return ResponseEntity.noContent().build();

@@ -128,9 +128,12 @@ public class PersonController {
 
     // Method
 
-    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of person to delete") @PathVariable Integer id) {
+    public ResponseEntity<?> delete(
+            @Valid @Parameter(description = "Id of person to delete")
+            @PathVariable Integer id) {
         try {
             personService.deleteById(id);
+
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Person was not found");

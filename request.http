@@ -19,7 +19,7 @@ POST http://localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-  "username": "FS20_03_TestUser",
+  "username": "FS20_03_TestUser2",
   "password": "FS20_03_TestPwd2"
 }
 
@@ -55,7 +55,7 @@ Authorization: Bearer {{auth_token}}
 ###
 
 ### Delete person by id -> SUCCESSFULL -> Only if person has no items
-DELETE http://localhost:8080/persons/12
+DELETE http://localhost:8080/persons/5
 Authorization: Bearer {{auth_token}}
 
 #######################
@@ -77,19 +77,19 @@ Content-Type: application/json
 ###
 
 ### Get Item by id -> SUCCESSFULL
-GET http://localhost:8080/items/19
+GET http://localhost:8080/items/11
 Authorization: Bearer {{auth_token}}
 
 ###
 
 ### Get all Items -> SUCCESSFULL
-GET http://localhost:8080/items/item
+GET http://localhost:8080/items
 Authorization: Bearer {{auth_token}}
 
 ###
 
 ### Get all Items by name -> SUCCESSFULL
-GET http://localhost:8080/items/item?name=FS20_03_TestItem2
+GET http://localhost:8080/items?name=FS20_03_TestItem
 Authorization: Bearer {{auth_token}}
 
 ###
@@ -101,7 +101,7 @@ Authorization: Bearer {{auth_token}}
 ###
 
 ### Delete Item by id -> SUCCESSFULL
-DELETE http://localhost:8080/items/19
+DELETE http://localhost:8080/items/17
 Authorization: Bearer {{auth_token}}
 
 #######################

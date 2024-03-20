@@ -39,7 +39,7 @@ public class ItemControllerTest {
         // 2. Ausführung des Tests mit mockMvc
         mockMvc.perform(post(ItemController.PATH)
                         .contentType("application/json")
-                        .content("{\"name\":\"Item1\", \"personId\":\"1\"}"))
+                        .content("{\"name\":\"Item1\", \"description\":\"itemdescription\", \"personId\":\"1\"}"))
                 // 3. Überprüfung der Ergebnisse
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Item1")));

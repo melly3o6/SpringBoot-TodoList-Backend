@@ -21,7 +21,7 @@ public class Person {
 
     private String password;
 
-    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Item> items = new HashSet<>();
 
     // Constructors
