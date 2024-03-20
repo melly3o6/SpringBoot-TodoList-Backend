@@ -70,7 +70,7 @@ public class ItemService {
         }
     }
 
-    public List<Item> findByTag(String name) {
+    public List<Item> findByTagName(String name) {
         return itemRepository.findByTagName(name);
     }
     public List<Item> findByNameAndTagName(String name, String tagName) {

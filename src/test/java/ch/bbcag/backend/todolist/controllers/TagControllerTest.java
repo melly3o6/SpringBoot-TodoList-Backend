@@ -29,27 +29,33 @@ public class TagControllerTest {
     @MockBean
     private TagService tagService;
 
+
     @Test
     public void checkPost_whenValidNewTag_thenIsCreated() throws Exception {
-        Mockito.when(tagService.insert(any(Tag.class)))
-                .thenReturn(TestDataUtil.getTestTag());
 
+        // 1. Mockito Mocking
+        Mockito.when(tagService.insert(any(Tag.class))).thenReturn(TestDataUtil.getTestTag());
+
+        // 2. Ausführung des Tests mit mockMvc
         mockMvc.perform(post(TagController.PATH)
                         .contentType("application/json")
-                        .content("{\"name\":\"Tag1\"}"))
+                        .content("{\"name\":\"Tag1\", \"personId\":\"1\"}"))
+                // 3. Überprüfung der Ergebnisse
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is("Item1")));
+                .andExpect(jsonPath("$.name", is("Tag1")));
     }
 
     @Test
     public void checkPost_whenInvalidTag_thenIsBadRequest() throws Exception {
 
-        Mockito.when(tagService.insert(any(Tag.class)))
-                .thenThrow(DataIntegrityViolationException.class);
+        // 1. Mockito Mocking
+        Mockito.when(tagService.insert(any(Tag.class))).thenThrow(DataIntegrityViolationException.class);
 
+        // 2. Ausführung des Tests mit mockMvc
         mockMvc.perform(post(TagController.PATH)
                         .contentType("application/json")
                         .content("{\"wrongFieldName\":\"Tag1\"}"))
+                // 3. Überprüfung der Ergebnisse
                 .andExpect(status().isBadRequest());
     }
 

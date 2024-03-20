@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,6 @@ public class ItemController {
 
     // Constructor for ItemController, requires Item-service
     // @Autowired annotation
-    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
@@ -59,14 +58,25 @@ public class ItemController {
 
     // Method to find either all items or all items with a certain name
     // -> @PathVariable annotation for 'name' means variable 'name' is used in URI
-    public ResponseEntity<?> findItems(@RequestParam(required = false) String name) {
+    public ResponseEntity<?> findItems(
+            @Parameter(description = "name of items to get")
+            @RequestParam(required = false) String name,
+
+            @Parameter(description = "Tag name of items to get")
+            @RequestParam(required = false) String tagName
+        ) {
         try {
             // List for entity items is decelerated
             List<Item> items;
-            if (name == null) {
-                items = itemService.findAll();
-            } else {
+
+            if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(tagName)) {
+                items = itemService.findByNameAndTagName(name, tagName);
+            } else if (StringUtils.isNotBlank(tagName)) {
+                items = itemService.findByTagName(tagName);
+            } else if (StringUtils.isNotBlank(name)) {
                 items = itemService.findByName(name);
+            } else {
+                items = itemService.findAll();
             }
             return ResponseEntity.ok(items.stream()
                     .map(ItemMapper::toResponseDTO)

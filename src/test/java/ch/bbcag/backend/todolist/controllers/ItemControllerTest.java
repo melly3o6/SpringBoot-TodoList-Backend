@@ -29,14 +29,18 @@ public class ItemControllerTest {
     @MockBean
     private ItemService itemService;
 
+
     @Test
     public void checkPost_whenValidNewItem_thenIsCreated() throws Exception {
-        Mockito.when(itemService.insert(any(Item.class)))
-                .thenReturn(TestDataUtil.getTestItem());
 
+        // 1. Mockito Mocking
+        Mockito.when(itemService.insert(any(Item.class))).thenReturn(TestDataUtil.getTestItem());
+
+        // 2. Ausführung des Tests mit mockMvc
         mockMvc.perform(post(ItemController.PATH)
                         .contentType("application/json")
                         .content("{\"name\":\"Item1\", \"personId\":\"1\"}"))
+                // 3. Überprüfung der Ergebnisse
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Item1")));
     }
@@ -44,13 +48,16 @@ public class ItemControllerTest {
     @Test
     public void checkPost_whenInvalidItem_thenIsBadRequest() throws Exception {
 
-        Mockito.when(itemService.insert(any(Item.class)))
-                .thenThrow(DataIntegrityViolationException.class);
+        // 1. Mockito Mocking
+        Mockito.when(itemService.insert(any(Item.class))).thenThrow(DataIntegrityViolationException.class);
 
+        // 2. Ausführung des Tests mit mockMvc
         mockMvc.perform(post(ItemController.PATH)
                         .contentType("application/json")
                         .content("{\"wrongFieldName\":\"Item1\"}"))
+                // 3. Überprüfung der Ergebnisse
                 .andExpect(status().isBadRequest());
     }
+
 
 }

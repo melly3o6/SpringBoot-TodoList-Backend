@@ -45,14 +45,15 @@ public class TagController {
     })
 
     // Method
-    public ResponseEntity<?> findTags(@RequestParam(required = false) String name) {
+    public ResponseEntity<?> findTags(
+            @Parameter(description = "Tag name to search")
+            @RequestParam(required = false) String name
+    ) {
         try {
-            List<Tag> tags;
-            if (name == null) {
-                tags = tagService.findAll();
-            } else {
-                tags = tagService.findByName(name);
-            }
+            List<Tag> tags = name != null
+                    ? tagService.findByName(name)
+                    : tagService.findAll();
+
             return ResponseEntity.ok(tags.stream()
                     .map(TagMapper::toResponseDTO)
                     .toList());
