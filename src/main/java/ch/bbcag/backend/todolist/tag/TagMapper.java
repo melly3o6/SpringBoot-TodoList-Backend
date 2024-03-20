@@ -3,8 +3,6 @@ package ch.bbcag.backend.todolist.tag;
 import ch.bbcag.backend.todolist.item.Item;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TagMapper {
 
@@ -36,18 +34,8 @@ public class TagMapper {
 
         if (tag.getLinkedItems() == null) {
             tag.setLinkedItems(null);
-        } else {
-            Set<Integer> linkedItemIds = tagRequestDTO.getLinkedItemId();
-
-            if (linkedItemIds != null) {
-                Set<Item> linkedItems = linkedItemIds
-                        .stream()
-                        .map(TagMapper::mapToItem)
-                        .collect(Collectors.toSet());
-
-                tag.setLinkedItems(linkedItems);
-            }
         }
+
         return tag;
     }
 
