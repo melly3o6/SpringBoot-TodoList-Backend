@@ -31,8 +31,7 @@ public class ItemControllerTest {
 
     @Test
     public void checkPost_whenValidNewItem_thenIsCreated() throws Exception {
-        Mockito.when(itemService.insert(any(Item.class)))
-                .thenReturn(TestDataUtil.getTestItem());
+        Mockito.when(itemService.insert(any(Item.class))).thenReturn(TestDataUtil.getTestItem());
 
         mockMvc.perform(post(ItemController.PATH)
                         .contentType("application/json")
@@ -44,8 +43,7 @@ public class ItemControllerTest {
     @Test
     public void checkPost_whenInvalidItem_thenIsBadRequest() throws Exception {
 
-        Mockito.when(itemService.insert(any(Item.class)))
-                .thenThrow(DataIntegrityViolationException.class);
+        Mockito.when(itemService.insert(any(Item.class))).thenThrow(DataIntegrityViolationException.class);
 
         mockMvc.perform(post(ItemController.PATH)
                         .contentType("application/json")

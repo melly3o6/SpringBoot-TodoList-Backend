@@ -14,13 +14,12 @@ public class ItemRequestDTO {
     @NotBlank(message = "must not be blank")
     private String name;
 
-    @NotBlank(message = "must not be blank")
     private String description;
 
     @NotNull(message = "owner is required")
     private Integer personId;
 
-    private Set<Integer> linkedTagIds;
+    // private Set<Integer> linkedTagIds;
 
     private Timestamp deletedAt;
 
@@ -38,10 +37,6 @@ public class ItemRequestDTO {
 
     public Integer getPersonId() {
         return personId;
-    }
-
-    public Set<Integer> getLinkedTagId() {
-        return linkedTagIds;
     }
 
     public Timestamp getDeletedAt() {
@@ -66,9 +61,7 @@ public class ItemRequestDTO {
         this.personId = personId;
     }
 
-    public void setLinkedTagId(Set<Integer> tagIds) {
-        this.linkedTagIds = tagIds;
-    }
+    // public void setLinkedTagId(Set<Integer> tagIds) {this.linkedTagIds = tagIds;}
 
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
@@ -85,12 +78,12 @@ public class ItemRequestDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemRequestDTO that = (ItemRequestDTO) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(personId, that.personId);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(personId, that.personId) && Objects.equals(deletedAt, that.deletedAt) && Objects.equals(doneAt, that.doneAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, personId);
+        return Objects.hash(name, description, personId, deletedAt, doneAt);
     }
 
 }

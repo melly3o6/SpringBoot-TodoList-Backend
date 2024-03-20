@@ -3,10 +3,8 @@ package ch.bbcag.backend.todolist.item;
 import ch.bbcag.backend.todolist.person.Person;
 import ch.bbcag.backend.todolist.tag.Tag;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,11 +21,9 @@ public class Item {
     private Integer id;
 
     // Name of item -> Annotation @NotNull for validation
-    @NotNull
     private String name;
 
     // Description of item -> Annotation @NotNull for validation
-    @NotNull
     private String description;
 
     // Many-to-one relationship between items and person (The author of the item)
@@ -42,14 +38,13 @@ public class Item {
             joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> linkedTags = new HashSet<>();
+    private Set<Tag> linkedTags;
 
     // Time & Date when the item was created
     @Column(insertable = false)
     private java.sql.Timestamp createdAt;
 
     // Time & Date when the item was deleted
-    @Column(insertable = false)
     private java.sql.Timestamp deletedAt;
 
     // Time & Date when the item was marked as done

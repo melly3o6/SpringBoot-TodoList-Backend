@@ -3,16 +3,14 @@ package ch.bbcag.backend.todolist.tag;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class TagRequestDTO {
 
     // Attributes
 
-    @NotBlank(message = "Tag name can't be blank")
+    @NotBlank(message = "name must not be blank")
     private String name;
 
-    private Set<Integer> linkedItemIds;
 
     // Getters
 
@@ -20,18 +18,10 @@ public class TagRequestDTO {
         return name;
     }
 
-    public Set<Integer> getLinkedItemId() {
-        return linkedItemIds;
-    }
-
     // Setters
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setLinkedItemId(Set<Integer> itemIds) {
-        this.linkedItemIds = itemIds;
     }
 
     // equals & hashCode

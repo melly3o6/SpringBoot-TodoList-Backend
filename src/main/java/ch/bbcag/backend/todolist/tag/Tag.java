@@ -3,7 +3,6 @@ package ch.bbcag.backend.todolist.tag;
 import ch.bbcag.backend.todolist.item.Item;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "linkedTags")
-    private Set<Item> linkedItems = new HashSet<>();
+    private Set<Item> linkedItems;
 
     // Getters
 

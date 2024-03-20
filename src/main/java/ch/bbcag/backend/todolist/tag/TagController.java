@@ -37,22 +37,23 @@ public class TagController {
     // GET
     // Find all tags
     // --- Documentation ---
-    @GetMapping("tag")
-    @Operation(summary = "Get all tags.")
+    @GetMapping
+    @Operation(summary = "Find tags with a given name. If no name given, all tags are returned.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tags found",
                 content = @Content(schema = @Schema(implementation = TagResponseDTO.class)))
     })
 
     // Method
-    public ResponseEntity<?> findTags(@RequestParam(required = false) String name) {
+    public ResponseEntity<?> findTags(
+            @Parameter(description = "Tag name to search")
+            @RequestParam(required = false) String name
+    ) {
         try {
-            List<Tag> tags;
-            if (name == null) {
-                tags = tagService.findAll();
-            } else {
-                tags = tagService.findByName(name);
-            }
+            List<Tag> tags = name != null
+                    ? tagService.findByName(name)
+                    : tagService.findAll();
+
             return ResponseEntity.ok(tags.stream()
                     .map(TagMapper::toResponseDTO)
                     .toList());
@@ -63,21 +64,21 @@ public class TagController {
     }
 
     // Find a tag by id
-
-    // Documentation
-
-    @GetMapping("{id}")
+    // --- Documentation ---
+    @GetMapping("/{id}")
     @Operation(summary = "Get a tag")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tag found",
                     content = @Content(schema = @Schema(implementation = TagResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Tag was not found",
+            @ApiResponse(responseCode = "404", description = "Tag not found",
                     content = @Content)
     })
 
     // Method
-
-    public ResponseEntity<?> findById(@Valid @Parameter(description = "Id of tag to get") @PathVariable Integer id) {
+    public ResponseEntity<?> findById(
+            @Parameter(description = "Id of tag to get")
+            @PathVariable("id") Integer id
+    ) {
         try {
             Tag tag = tagService.findById(id);
             return ResponseEntity.ok(TagMapper.toResponseDTO(tag));
@@ -87,46 +88,35 @@ public class TagController {
     }
 
     // POST
-
     // Create a tag
-
     // Documentation
-
     @PostMapping
-    @Operation(summary = "Create a tag")
+    @Operation(summary = "Create a new tag")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tag created",
+            @ApiResponse(responseCode = "200", description = "Tag was added successfully",
                     content = @Content(schema = @Schema(implementation = TagResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Tag couldn't be created",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Tag was not found",
-                    content = @Content),
             @ApiResponse(responseCode = "409", description = "There was a conflict while creating the tag",
                     content = @Content)
     })
 
     // Method
-
-    public ResponseEntity<?> insert(@Valid @RequestBody TagRequestDTO newTagDTO) {
+    public ResponseEntity<?> insert(
+            @Parameter(description = "The new user to create")
+            @Valid @RequestBody TagRequestDTO newTagDTO
+    ) {
         try {
             Tag newTag = TagMapper.fromRequestDTO(newTagDTO);
             Tag savedTag = tagService.insert(newTag);
-            TagResponseDTO responseDTO = TagMapper.toResponseDTO(savedTag);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(TagMapper.toResponseDTO(savedTag));
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tag couldn't be created");
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag was not found");
         }
     }
 
     // PATCH
-
     // Update a tag
-
     // Documentation
-
-    @PatchMapping("{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Update a tag")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tag was updated successfully",
@@ -138,12 +128,16 @@ public class TagController {
     })
 
     // Method
+    public ResponseEntity<?> update(
+            @Parameter(description = "The tag to update")
+            @RequestBody TagRequestDTO updateTagDTO,
 
-    public ResponseEntity<?> update(@Parameter(description = "The tag to update") @RequestBody TagRequestDTO updateTagDTO, @PathVariable Integer id) {
+            @Parameter(description = "Id of tag to update")
+            @PathVariable("id") Integer id) {
         try {
             Tag updateTag = TagMapper.fromRequestDTO(updateTagDTO);
             Tag savedTag = tagService.update(updateTag, id);
-            return ResponseEntity.ok(TagMapper.toResponseDTO(savedTag));
+            return ResponseEntity.status(HttpStatus.OK).body(TagMapper.toResponseDTO(savedTag));
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There was a conflict while updating the tag");
         } catch (EntityNotFoundException e) {
@@ -152,12 +146,9 @@ public class TagController {
     }
 
     // DELETE
-
     // Delete a tag
-
     // Documentation
-
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete a tag")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Tag was deleted successfully",
@@ -167,8 +158,10 @@ public class TagController {
     })
 
     // Method
-
-    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of tag to delete") @PathVariable Integer id) {
+    public ResponseEntity<?> delete(
+            @Parameter(description = "Id of tag to delete")
+            @PathVariable("id") Integer id
+    ) {
         try {
             tagService.deleteById(id);
             return ResponseEntity.noContent().build();

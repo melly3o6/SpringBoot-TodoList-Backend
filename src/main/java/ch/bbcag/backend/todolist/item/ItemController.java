@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -36,8 +36,6 @@ public class ItemController {
     private final ItemService itemService;
 
     // Constructor for ItemController, requires Item-service
-    // @Autowired annotation
-    @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
@@ -46,9 +44,9 @@ public class ItemController {
     // Find items by name or tagName
     // --- Documentation ---
     // @GetMapping annotation marks method as method for GET request -> followed by the URI http://localhost:8080/items/?name={name}
-    @GetMapping("item")
+    @GetMapping
     // @Operation annotation
-    @Operation(summary = "Get all items.")
+    @Operation(summary = "Find items with a given name and tag name. Only not blank inputs are considered, otherwise all items are returned.")
     // @ApiResponses annotation
     @ApiResponses(value = {
             // @ApiResponse annotation
@@ -59,21 +57,30 @@ public class ItemController {
 
     // Method to find either all items or all items with a certain name
     // -> @PathVariable annotation for 'name' means variable 'name' is used in URI
-    public ResponseEntity<?> findItems(@RequestParam(required = false) String name) {
-        try {
-            // List for entity items is decelerated
-            List<Item> items;
-            if (name == null) {
-                items = itemService.findAll();
-            } else {
-                items = itemService.findByName(name);
-            }
-            return ResponseEntity.ok(items.stream()
-                    .map(ItemMapper::toResponseDTO)
-                    .toList());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Items were not found");
+    public ResponseEntity<?> findItems(
+            @Parameter(description = "Item name to search, leave empty for all")
+            @RequestParam(required = false) String name,
+
+            @Parameter(description = "Tag name to search, leave empty for all")
+            @RequestParam(required = false) String tagName
+    ) {
+
+        // List for entity items is decelerated
+        List<Item> items;
+
+        if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(tagName)) {
+            items = itemService.findByNameAndTagName(name, tagName);
+        } else if (StringUtils.isNotBlank(tagName)) {
+            items = itemService.findByTagName(tagName);
+        } else if (StringUtils.isNotBlank(name)) {
+            items = itemService.findByName(name);
+        } else {
+            items = itemService.findAll();
         }
+        return ResponseEntity.ok(items.stream()
+                .map(ItemMapper::toResponseDTO)
+                .toList());
+
 
     }
 
@@ -81,7 +88,7 @@ public class ItemController {
     // --- Documentation ---
     // @GetMapping annotation declares method as GET method
     // --> ("{id}") adds a PathVariable to the @GetMapping annotation
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     // @Operation annotation
     @Operation(summary = "Get an item")
     // @ApiResponse annotation
@@ -95,7 +102,7 @@ public class ItemController {
     })
 
     // Method to find a specific item by its id
-    public ResponseEntity<?> findById(@Valid @Parameter(description = "Id of item to get") @PathVariable Integer id) {
+    public ResponseEntity<?> findById(@Parameter(description = "Id of item to get") @PathVariable("id") Integer id) {
         try {
             Item item = itemService.findById(id);
             return ResponseEntity.ok(ItemMapper.toResponseDTO(item));
@@ -108,29 +115,25 @@ public class ItemController {
     // Create an item
     // Documentation
     @PostMapping
-    @Operation(summary = "Create an item")
+    @Operation(summary = "Add a new item")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Item created",
+            @ApiResponse(responseCode = "200", description = "Item was created successfully",
                     content = @Content(schema = @Schema(implementation = ItemResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Item couldn't be created",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Item was not found",
-                    content = @Content),
             @ApiResponse(responseCode = "409", description = "There was a conflict while creating the item",
                     content = @Content)
     })
 
     // Method
-    public ResponseEntity<?> insert(@Valid @RequestBody ItemRequestDTO newItemDTO) {
+    public ResponseEntity<?> insert(
+            @Parameter(description = "The new item to create")
+            @Valid @RequestBody ItemRequestDTO newItemDTO
+    ) {
         try {
             Item newItem = ItemMapper.fromRequestDTO(newItemDTO);
             Item savedItem = itemService.insert(newItem);
-            ItemResponseDTO responseDTO = ItemMapper.toResponseDTO(savedItem);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(ItemMapper.toResponseDTO(savedItem));
         } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Item couldn't be created");
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item was not found");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Item could not be created");
         }
     }
 
@@ -150,11 +153,16 @@ public class ItemController {
 
     // Method
 
-    public ResponseEntity<?> update(@Parameter(description = "The item to update") @RequestBody ItemRequestDTO updateItemDTO, @PathVariable Integer id) {
+    public ResponseEntity<?> update(
+            @Parameter(description = "The item to update")
+            @RequestBody ItemRequestDTO updateItemDTO,
+
+            @Parameter(description = "Id of item to update")
+            @PathVariable Integer id) {
         try {
             Item updateItem = ItemMapper.fromRequestDTO(updateItemDTO);
             Item savedItem = itemService.update(updateItem, id);
-            return ResponseEntity.ok(ItemMapper.toResponseDTO(savedItem));
+            return ResponseEntity.status(HttpStatus.OK).body(ItemMapper.toResponseDTO(savedItem));
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There was a conflict while updating the item");
         } catch (EntityNotFoundException e) {
@@ -165,7 +173,7 @@ public class ItemController {
     // DELETE
     // Delete an item
     // Documentation
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete an item")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Item was deleted successfully",
@@ -176,7 +184,10 @@ public class ItemController {
 
     // Method
 
-    public ResponseEntity<?> delete(@Valid @Parameter(description = "Id of item to delete") @PathVariable Integer id) {
+    public ResponseEntity<?> delete(
+            @Parameter(description = "Id of item to delete")
+            @PathVariable("id") Integer id
+    ) {
         try {
             itemService.deleteById(id);
             return ResponseEntity.noContent().build();

@@ -12,19 +12,17 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByName(String name);
 
     // Query to find item by tag-name
-    @Query(
-            "SELECT i FROM Item i " +
-                    "JOIN i.linkedTags t " +
-                    "WHERE t.name LIKE CONCAT('%', :tagName, '%')"
+    @Query("SELECT i FROM Item i " +
+            "JOIN i.linkedTags t " +
+            "WHERE t.name LIKE CONCAT('%', :tagName, '%')"
     )
     List<Item> findByTagName(String tagName);
 
     // Query to find item by name and tag-name
-    @Query(
-            "SELECT i FROM Item i " +
-                    "JOIN i.linkedTags t " +
-                    "WHERE t.name LIKE CONCAT('%', :tagName, '%') AND i.name LIKE CONCAT('%', :name, '%')"
-    )
+    @Query("SELECT i FROM Item i " +
+            "JOIN i.linkedTags t " +
+            "WHERE i.name LIKE CONCAT('%', :name, '%') " +
+            "AND t.name LIKE CONCAT('%', :tagName, '%')")
     List<Item> findByNameAndTagName(String name, String tagName);
 
 }

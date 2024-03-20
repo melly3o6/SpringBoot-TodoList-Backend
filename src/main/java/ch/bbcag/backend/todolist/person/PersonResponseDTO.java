@@ -5,16 +5,27 @@ import java.util.Objects;
 
 public final class PersonResponseDTO extends PersonRequestDTO {
     private Integer id;
+    private List<Integer> itemIds;
 
+    // Getters
+    public Integer getId() {
+        return id;
+    }
     public List<Integer> getItemIds() {
         return itemIds;
     }
+
+    // Setters
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 
     public void setItemIds(List<Integer> itemIds) {
         this.itemIds = itemIds;
     }
 
-    private List<Integer> itemIds;
+    // equals & hashCode & toString
 
     @Override
     public boolean equals(Object obj) {
@@ -39,14 +50,4 @@ public final class PersonResponseDTO extends PersonRequestDTO {
                 "id=" + id +
                 '}';
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-
 }

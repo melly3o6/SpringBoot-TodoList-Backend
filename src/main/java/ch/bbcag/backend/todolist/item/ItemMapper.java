@@ -2,9 +2,6 @@ package ch.bbcag.backend.todolist.item;
 
 import ch.bbcag.backend.todolist.person.Person;
 import ch.bbcag.backend.todolist.tag.Tag;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ItemMapper {
 
@@ -15,16 +12,19 @@ public class ItemMapper {
 
         itemResponseDTO.setId(item.getId());
         itemResponseDTO.setName(item.getName());
+        itemResponseDTO.setDescription(item.getDescription());
         itemResponseDTO.setCreatedAt(item.getCreatedAt());
+        itemResponseDTO.setDoneAt(item.getDoneAt());
+        itemResponseDTO.setDeletedAt(item.getDeletedAt());
+
+        if (item.getPerson() != null) {
+            itemResponseDTO.setPersonId(item.getPerson().getId());
+        }
 
         if (item.getLinkedTags() != null) {
-            List<Integer> tagIds = item
-                    .getLinkedTags()
-                    .stream()
-                    .map(Tag::getId)
-                    .toList();
-
-            itemResponseDTO.setTagIds(tagIds);
+            for (Tag tag : item.getLinkedTags()) {
+                itemResponseDTO.getTagIds().add(tag.getId());
+            }
         }
 
         return itemResponseDTO;
@@ -33,45 +33,18 @@ public class ItemMapper {
     // From request
 
     public static Item fromRequestDTO(ItemRequestDTO itemRequestDTO) {
-        Person person = mapToPerson(itemRequestDTO.getPersonId());
         Item item = new Item();
 
         item.setName(itemRequestDTO.getName());
-
         item.setDescription(itemRequestDTO.getDescription());
+        item.setDeletedAt(itemRequestDTO.getDeletedAt());
+        item.setDoneAt(itemRequestDTO.getDoneAt());
 
-        if (itemRequestDTO.getPersonId() == null) {
-            item.setPerson(null);
+        if (itemRequestDTO.getPersonId() != null) {
+            item.setPerson(new Person(itemRequestDTO.getPersonId()));
         }
-        else {
-            item.setPerson(person);
-        }
 
-        if (item.getLinkedTags() == null) {
-            item.setLinkedTags(null);
-        } else {
-            Set<Integer> linkedTagIds = itemRequestDTO.getLinkedTagId();
-
-            if (linkedTagIds != null) {
-                Set<Tag> linkedTags = linkedTagIds
-                    .stream()
-                    .map(ItemMapper::mapToTag)
-                    .collect(Collectors.toSet());
-
-                item.setLinkedTags(linkedTags);
-            }
-        }
         return item;
-    }
-    private static Person mapToPerson(Integer id) {
-        Person person = new Person();
-        person.setId(id);
-        return person;
-    }
-    private static Tag mapToTag(Integer id) {
-        Tag tag = new Tag();
-        tag.setId(id);
-        return tag;
     }
 
 }

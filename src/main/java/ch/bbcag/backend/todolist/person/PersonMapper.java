@@ -18,7 +18,7 @@ public class PersonMapper {
         if (person.getItems() != null) {
             List<Integer> itemIds = person
                     .getItems()
-                     .stream()
+                    .stream()
                     .map(Item::getId)
                     .toList();
 

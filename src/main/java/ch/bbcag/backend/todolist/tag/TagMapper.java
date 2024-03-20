@@ -22,7 +22,6 @@ public class TagMapper {
                     .stream()
                     .map(Item::getId)
                     .toList();
-
             tagResponseDTO.setItemIds(itemIds);
         }
 
@@ -30,7 +29,6 @@ public class TagMapper {
     }
 
     // From request
-
     public static Tag fromRequestDTO(TagRequestDTO tagRequestDTO) {
         Tag tag = new Tag();
 

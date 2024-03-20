@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Integer> {
-    @Query("SELECT i FROM Tag i WHERE i.name LIKE CONCAT('%', :name, '%')")
+    @Query("SELECT t FROM Tag t WHERE t.name LIKE CONCAT('%', :name, '%')")
     List<Tag> findByName(String name);
 
 }

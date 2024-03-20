@@ -31,12 +31,11 @@ public class TagControllerTest {
 
     @Test
     public void checkPost_whenValidNewTag_thenIsCreated() throws Exception {
-        Mockito.when(tagService.insert(any(Tag.class)))
-                .thenReturn(TestDataUtil.getTestTag());
+        Mockito.when(tagService.insert(any(Tag.class))).thenReturn(TestDataUtil.getTestTag());
 
         mockMvc.perform(post(TagController.PATH)
                         .contentType("application/json")
-                        .content("{\"name\":\"Tag1\"}"))
+                        .content("{\"name\":\"Tag1\", \"personId\":\"1\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Item1")));
     }
@@ -44,8 +43,7 @@ public class TagControllerTest {
     @Test
     public void checkPost_whenInvalidTag_thenIsBadRequest() throws Exception {
 
-        Mockito.when(tagService.insert(any(Tag.class)))
-                .thenThrow(DataIntegrityViolationException.class);
+        Mockito.when(tagService.insert(any(Tag.class))).thenThrow(DataIntegrityViolationException.class);
 
         mockMvc.perform(post(TagController.PATH)
                         .contentType("application/json")

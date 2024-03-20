@@ -34,11 +34,8 @@ public class PersonController {
     }
 
     // GET
-
     // Find person all persons
-
     // Documentation
-
     @GetMapping
     @Operation(summary = "Get all persons.")
     @ApiResponses(value = {
@@ -47,7 +44,6 @@ public class PersonController {
     })
 
     // Method
-
     public ResponseEntity<?> findAll() {
         List<Person> persons = personService.findAll();
 
@@ -71,7 +67,9 @@ public class PersonController {
 
     // Method
 
-    public ResponseEntity<?> findById(@Valid @Parameter(description = "Id of person to get") @PathVariable Integer id) {
+    public ResponseEntity<?> findById(
+            @Parameter(description = "Id of person to get")
+            @PathVariable Integer id) {
         try {
             Person person = personService.findById(id);
             return ResponseEntity.ok(PersonMapper.toResponseDTO(person));
@@ -81,11 +79,8 @@ public class PersonController {
     }
 
     // PATCH
-
     // Update a person
-
     // Documentation
-
     @PatchMapping("{id}")
             @Operation(summary = "Update a person")
             @ApiResponses(value = {
@@ -98,7 +93,6 @@ public class PersonController {
     })
 
     // Method
-
     public ResponseEntity<?> update(@Parameter(description = "The person to update") @RequestBody PersonRequestDTO updatePersonDTO, @PathVariable Integer id) {
         try {
             Person updatePerson = PersonMapper.fromRequestDTO(updatePersonDTO);
@@ -112,11 +106,8 @@ public class PersonController {
     }
 
     // DELETE
-
     // Delete a person
-
     // Documentation
-
     @DeleteMapping("{id}")
     @Operation(summary = "Delete a person")
     @ApiResponses(value = {

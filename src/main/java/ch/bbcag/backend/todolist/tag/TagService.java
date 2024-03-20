@@ -17,6 +17,17 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
+    public List<Tag> findAll() {
+        return tagRepository.findAll();
+    }
+
+    public Tag findById(Integer id) {
+        return tagRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+    public List<Tag> findByName(String name) {
+        return tagRepository.findByName(name);
+    }
+
     public Tag insert(Tag tag) {
         return tagRepository.save(tag);
     }
@@ -27,30 +38,20 @@ public class TagService {
         return tagRepository.save(existing);
     }
 
-    public List<Tag> findAll() {
-       return tagRepository.findAll();
-    }
-
-    public Tag findById(Integer id) {
-        return tagRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    }
-
     public void deleteById(Integer id) {
         tagRepository.deleteById(id);
     }
 
-    public List<Tag> findByName(String name) {
-        return tagRepository.findByName(name);
-    }
-
     private void mergeTags(Tag existing, Tag changing) {
         Map<String, List<String>> errors = new HashMap<>();
+
         if (changing.getName() != null) {
             if (StringUtils.isNotBlank(changing.getName())) {
                 existing.setName(changing.getName());
             } else {
                 errors.put("name", List.of("name must not be empty"));
             }
+
             if (!errors.isEmpty()) {
                 throw new FailedValidationException(errors);
             }
